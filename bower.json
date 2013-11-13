@@ -1,0 +1,29 @@
+{
+  "name": "iadm_demo",
+  "version": "0.0.0",
+  "authors": [
+    "Diego Paez <paez.di@gmail.com>"
+  ],
+  "description": "A simple demo app using some mobile specific APIs (accelerometer, gyroscope...)",
+  "main": "app.js",
+  "keywords": [
+    "demo",
+    "app",
+    "mobile-first"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/javascripts",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "chroma-js": "~0.5.4",
+    "zepto": "~1.0.0",
+    "screenfull": "~1.1.0"
+  }
+}
