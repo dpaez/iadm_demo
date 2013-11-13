@@ -106,11 +106,11 @@
           $( '#color' ).html( backgroundColor );
 
 
-          var textColor = chroma('black').brighten();
+          var textColor = chroma('black').brighten().hex();
 
           if ( chroma.contrast(backgroundColor, textColor) < 4.5 ){
             //textColor = scale.getColor( 1 - normalizeGamma(gamma) );
-            textColor = chroma('white').brighten();
+            textColor = chroma('white').brighten().hex();
           }
           $( '#text_color' ).html( textColor );
           $( 'body' ).css( 'color', textColor );
