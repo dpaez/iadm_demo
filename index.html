@@ -1,101 +1,142 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title></title><link rel="stylesheet" href="/stylesheets/style.css"><script src="/javascripts/modernizr.custom.js"></script><script src="/javascripts/zepto/zepto.min.js"></script><script src="/javascripts/chroma-js/chroma.js"></script><script src="/javascripts/screenfull/dist/screenfull.min.js"></script></head><body><section><h1>Accelerometer data</h1><article><h2>X:</h2><p id="acc_x"></p><h2>Y:</h2><p id="acc_y"></p><h2>Z:</h2><p id="acc_z"></p></article><h1>Orientation data</h1><article><h2>Alpha:</h2><p id="ori_alpha"></p><h2>Beta:</h2><p id="ori_beta"></p><h2>Gamma:</h2><p id="ori_gamma"></p><h2>Color:</h2><p id="color"></p><h2>Text color:</h2><p id="text_color"></p></article><button id="goFS" type="button">Go fullscreen</button></section><script>Zepto(function($){
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> IADM Mobile demo </title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/chroma-js/0.5.2/chroma.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/screenfull.js/1.0.4/screenfull.min.js"></script>
+  </head>
+  <body>
+    <section>
+      <h1>Accelerometer data</h1>
+      <article>
+        <h2>X:</h2>
+        <p id="acc_x"></p>
+        <h2>Y:</h2>
+        <p id="acc_y"></p>
+        <h2>Z:</h2>
+        <p id="acc_z"></p>
+      </article>
+      <h1>Orientation data</h1>
+      <article>
+        <h2>Alpha:</h2>
+        <p id="ori_alpha"></p>
+        <h2>Beta:</h2>
+        <p id="ori_beta"></p>
+        <h2>Gamma:</h2>
+        <p id="ori_gamma"></p>
+        <h2>Color:</h2>
+        <p id="color"></p>
+        <h2>Text color:</h2>
+        <p id="text_color"></p>
+      </article>
+      <button id="goFS" type="button">Go fullscreen</button>
+    </section>
+    <script>
+      Zepto(function($){
 
-  /**
-   * Some utilities functions below
-   */
-   
-  var normalizeAlpha = function( val ){
-    if ( !val ){ return undefined; }
-    
-    return ( (val) / (360) );
-  };
-  
-  var normalizeBeta = function( val ){
-    if ( !val ){ return undefined; }
-    return ( (val + 180)/(360) );
-  };
-  
-  var normalizeGamma = function( val ){
-    if ( !val ){ return undefined; }
-    return ( (val + 90)/(180) );
-  };
-  
-  var estimateColorForValue = function(hue, value, darkestValue, brightestValue) {
-    // Constants to determine saturation and brightness
-    var darkBrightness = 0.6;
-    var brightBrightness = 1;
-    var darkSaturation = 0.3;
-    var brightSaturation = 1;
-    
-    // Compute saturation and brightness:
-    var gradient = (value - darkestValue) / (brightestValue - darkestValue);
-    var saturation = darkSaturation + gradient * (brightSaturation - darkSaturation);
-    var brightness = darkBrightness + gradient * (brightBrightness - darkBrightness);
-    
-    return {h: hue, s:saturation, b:brightness};
-  };
-  
-  var handleMotion = function( event ){
-    console.log( 'devicemotion event: ', event );
-    
-    var alpha = event.alpha || undefined;
-    
-    if ( !alpha ){ return; }
-    console.log('alpha: ', alpha);
-    
-    $( '#acc_z' ).text( alpha );
-  };
-  
-  var handleOrientation = function( event ){
-    console.log( 'deviceorientation event: ', event );
-    
-    var alpha = event.alpha || undefined;
-    var beta = event.beta || undefined;
-    var gamma = event.gamma || undefined;
-    
-    if ( !( alpha && beta && gamma ) ){ return; }
-    
-    $( '#ori_alpha' ).text( normalizeAlpha(alpha) );
-    $( '#ori_beta' ).text( normalizeBeta(beta) );
-    $( '#ori_gamma' ).text( normalizeGamma(gamma) );
-    
-    //var color = estimateColorForValue( normalizeBeta(beta), gamma, -90, 90 );
-    //var color_chroma = chroma.hsv( color.h, color.s, color.b );
-    //var color_chroma = chroma.hsl( normalizeAlpha(alpha), normalizeBeta(beta), normalizeGamma(gamma) );
-    var bezInterpolator = chroma.interpolate.bezier(['white', 'yellow', 'green', 'black']);
-    var color_chroma = bezInterpolator( normalizeGamma(gamma) );
-    var backgroundColor = color_chroma.saturate().hex();
-    $( '#color' ).text( backgroundColor );
-    
-    
-    var textColor = chroma('black').brighten();
-    
-    if ( chroma.contrast(backgroundColor, textColor) < 4.5 ){
-      //textColor = scale.getColor( 1 - normalizeGamma(gamma) );
-      textColor = chroma('white').brighten();
-    }
-    $( '#text_color' ).text( textColor );
-    $( 'body' ).css( 'color', textColor );
-    $( 'body' ).css( 'background-color', backgroundColor );
-  };
-  
-  
-  if ( Modernizr.devicemotion ){
-    console.log( 'devicemotion event is present!' );
-    console.log( window );
-    window.addEventListener('devicemotion', handleMotion, true);
-  }
-  
-  if ( Modernizr.deviceorientation ){
-    console.log( 'deviceorientation event is present!' );
-    window.addEventListener('deviceorientation', handleOrientation, true);
-  }
-  
-  var goFS = document.getElementById("goFS");
-  goFS.addEventListener("click", function() {
-    if (screenfull.enabled) {
-      screenfull.request();
-    }
-  }, false);
-  
-});</script></body></html>
+        /**
+         * Some utilities functions below
+         */
+
+        var normalizeAlpha = function( val ){
+          if ( !val ){ return undefined; }
+
+          return ( (val) / (360) );
+        };
+
+        var normalizeBeta = function( val ){
+          if ( !val ){ return undefined; }
+          return ( (val + 180)/(360) );
+        };
+
+        var normalizeGamma = function( val ){
+          if ( !val ){ return undefined; }
+          return ( (val + 90)/(180) );
+        };
+
+        var estimateColorForValue = function(hue, value, darkestValue, brightestValue) {
+          // Constants to determine saturation and brightness
+          var darkBrightness = 0.6;
+          var brightBrightness = 1;
+          var darkSaturation = 0.3;
+          var brightSaturation = 1;
+
+          // Compute saturation and brightness:
+          var gradient = (value - darkestValue) / (brightestValue - darkestValue);
+          var saturation = darkSaturation + gradient * (brightSaturation - darkSaturation);
+          var brightness = darkBrightness + gradient * (brightBrightness - darkBrightness);
+
+          return {h: hue, s:saturation, b:brightness};
+        };
+
+        var handleMotion = function( event ){
+          console.log( 'devicemotion event: ', event );
+
+          var alpha = event.alpha || undefined;
+
+          if ( !alpha ){ return; }
+          console.log('alpha: ', alpha);
+
+          $( '#acc_z' ).html( alpha );
+        };
+
+        var handleOrientation = function( event ){
+          console.log( 'deviceorientation event: ', event );
+
+          var alpha = event.alpha || undefined;
+          var beta = event.beta || undefined;
+          var gamma = event.gamma || undefined;
+
+          if ( !( alpha && beta && gamma ) ){ return; }
+
+          $( '#ori_alpha' ).html( normalizeAlpha(alpha) );
+          $( '#ori_beta' ).html( normalizeBeta(beta) );
+          $( '#ori_gamma' ).html( normalizeGamma(gamma) );
+
+          //var color = estimateColorForValue( normalizeBeta(beta), gamma, -90, 90 );
+          //var color_chroma = chroma.hsv( color.h, color.s, color.b );
+          //var color_chroma = chroma.hsl( normalizeAlpha(alpha), normalizeBeta(beta), normalizeGamma(gamma) );
+          var bezInterpolator = chroma.interpolate.bezier(['white', 'yellow', 'green', 'black']);
+          var color_chroma = bezInterpolator( normalizeGamma(gamma) );
+          var backgroundColor = color_chroma.saturate().hex();
+          $( '#color' ).html( backgroundColor );
+
+
+          var textColor = chroma('black').brighten();
+
+          if ( chroma.contrast(backgroundColor, textColor) < 4.5 ){
+            //textColor = scale.getColor( 1 - normalizeGamma(gamma) );
+            textColor = chroma('white').brighten();
+          }
+          $( '#text_color' ).html( textColor );
+          $( 'body' ).css( 'color', textColor );
+          $( 'body' ).css( 'background-color', backgroundColor );
+        };
+
+
+        if ( Modernizr.devicemotion ){
+          console.log( 'devicemotion event is present!' );
+          console.log( window );
+          window.addEventListener('devicemotion', handleMotion, true);
+        }
+
+        if ( Modernizr.deviceorientation ){
+          console.log( 'deviceorientation event is present!' );
+          window.addEventListener('deviceorientation', handleOrientation, true);
+        }
+
+        var goFS = document.getElementById("goFS");
+        goFS.addEventListener("click", function() {
+          if (screenfull.enabled) {
+            screenfull.request();
+          }
+        }, false);
+
+      });
+    </script>
+  </body>
+</html>
