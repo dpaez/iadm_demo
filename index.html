@@ -35,107 +35,18 @@
       </article>
       <button id="goFS" type="button">Go fullscreen</button>
     </section>
+
+    <script src="lib/color_orientation.js"></script>
+
     <script>
       Zepto(function($){
 
-        /**
-         * Some utilities functions below
-         */
-
-        var normalizeAlpha = function( val ){
-          if ( !val ){ return undefined; }
-
-          return ( (val) / (360) );
-        };
-
-        var normalizeBeta = function( val ){
-          if ( !val ){ return undefined; }
-          return ( (val + 180)/(360) );
-        };
-
-        var normalizeGamma = function( val ){
-          if ( !val ){ return undefined; }
-          return ( (val + 90)/(180) );
-        };
-
-        var estimateColorForValue = function(hue, value, darkestValue, brightestValue) {
-          // Constants to determine saturation and brightness
-          var darkBrightness = 0.6;
-          var brightBrightness = 1;
-          var darkSaturation = 0.3;
-          var brightSaturation = 1;
-
-          // Compute saturation and brightness:
-          var gradient = (value - darkestValue) / (brightestValue - darkestValue);
-          var saturation = darkSaturation + gradient * (brightSaturation - darkSaturation);
-          var brightness = darkBrightness + gradient * (brightBrightness - darkBrightness);
-
-          return {h: hue, s:saturation, b:brightness};
-        };
-
-        var handleMotion = function( event ){
-          console.log( 'devicemotion event: ', event );
-
-          var alpha = event.alpha || undefined;
-
-          if ( !alpha ){ return; }
-          console.log('alpha: ', alpha);
-
-          $( '#acc_z' ).html( alpha );
-        };
-
-        var handleOrientation = function( event ){
-          console.log( 'deviceorientation event: ', event );
-
-          var alpha = event.alpha || undefined;
-          var beta = event.beta || undefined;
-          var gamma = event.gamma || undefined;
-
-          if ( !( alpha && beta && gamma ) ){ return; }
-
-          $( '#ori_alpha' ).html( normalizeAlpha(alpha) );
-          $( '#ori_beta' ).html( normalizeBeta(beta) );
-          $( '#ori_gamma' ).html( normalizeGamma(gamma) );
-
-          //var color = estimateColorForValue( normalizeBeta(beta), gamma, -90, 90 );
-          //var color_chroma = chroma.hsv( color.h, color.s, color.b );
-          //var color_chroma = chroma.hsl( normalizeAlpha(alpha), normalizeBeta(beta), normalizeGamma(gamma) );
-          var bezInterpolator = chroma.interpolate.bezier(['white', 'yellow', 'green', 'black']);
-          var color_chroma = bezInterpolator( normalizeGamma(gamma) );
-          var backgroundColor = color_chroma.saturate().hex();
-          $( '#color' ).html( backgroundColor );
-
-
-          var textColor = chroma('black').brighten();
-
-          if ( chroma.contrast(backgroundColor, textColor) < 4.5 ){
-            //textColor = scale.getColor( 1 - normalizeGamma(gamma) );
-            textColor = chroma('white').brighten();
-          }
-          $( '#text_color' ).html( textColor );
-          $( 'body' ).css( 'color', textColor );
-          $( 'body' ).css( 'background-color', backgroundColor );
-        };
-
-
-        if ( Modernizr.devicemotion ){
-          console.log( 'devicemotion event is present!' );
-          console.log( window );
-          window.addEventListener('devicemotion', handleMotion, true);
-        }
-
-        if ( Modernizr.deviceorientation ){
-          console.log( 'deviceorientation event is present!' );
-          window.addEventListener('deviceorientation', handleOrientation, true);
-        }
-
         var goFS = document.getElementById("goFS");
-        goFS.addEventListener("click", function() {
-          if (screenfull.enabled) {
-            screenfull.request();
-          }
-        }, false);
-
+          goFS.addEventListener("click", function() {
+            if (screenfull.enabled) {
+              screenfull.request();
+            }
+          }, false);
       });
     </script>
   </body>
