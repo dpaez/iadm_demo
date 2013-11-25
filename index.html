@@ -38,56 +38,9 @@
 
     <script src="lib/color_orientation.js"></script>
 
-<<<<<<< HEAD
+
     <script>
       Zepto(function($){
-=======
-        var handleOrientation = function( event ){
-          console.log( 'deviceorientation event: ', event );
-
-          var alpha = event.alpha || undefined;
-          var beta = event.beta || undefined;
-          var gamma = event.gamma || undefined;
-
-          if ( !( alpha && beta && gamma ) ){ return; }
-
-          $( '#ori_alpha' ).html( normalizeAlpha(alpha) );
-          $( '#ori_beta' ).html( normalizeBeta(beta) );
-          $( '#ori_gamma' ).html( normalizeGamma(gamma) );
-
-          //var color = estimateColorForValue( normalizeBeta(beta), gamma, -90, 90 );
-          //var color_chroma = chroma.hsv( color.h, color.s, color.b );
-          //var color_chroma = chroma.hsl( normalizeAlpha(alpha), normalizeBeta(beta), normalizeGamma(gamma) );
-          var bezInterpolator = chroma.interpolate.bezier(['white', 'yellow', 'green', 'black']);
-          var color_chroma = bezInterpolator( normalizeGamma(gamma) );
-          var backgroundColor = color_chroma.saturate().hex();
-          $( '#color' ).html( backgroundColor );
-
-
-          var textColor = chroma('black').brighten().hex();
-
-          if ( chroma.contrast(backgroundColor, textColor) < 4.5 ){
-            //textColor = scale.getColor( 1 - normalizeGamma(gamma) );
-            textColor = chroma('white').brighten().hex();
-          }
-          $( '#text_color' ).html( textColor );
-          $( 'body' ).css( 'color', textColor );
-          $( 'body' ).css( 'background-color', backgroundColor );
-        };
-
-
-        if ( Modernizr.devicemotion ){
-          console.log( 'devicemotion event is present!' );
-          console.log( window );
-          window.addEventListener('devicemotion', handleMotion, true);
-        }
-
-        if ( Modernizr.deviceorientation ){
-          console.log( 'deviceorientation event is present!' );
-          window.addEventListener('deviceorientation', handleOrientation, true);
-        }
->>>>>>> minor fix with chroma color
-
         var goFS = document.getElementById("goFS");
           goFS.addEventListener("click", function() {
             if (screenfull.enabled) {
